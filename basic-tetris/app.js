@@ -5,16 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.querySelector('#start-button')
     const width = 10
     let nextRandom = 0
+    let nextRandomColor = 0
     let timerId
     let score = 0
-    const colors = [
-      'orange',
-      'red',
-      'purple',
-      'green',
-      'blue'
-    ]
-  
+    let colors = ["#FF4900","#FFD200","#3714B0","#00AF64", "#B40097"]
+
     //The Tetrominoes
     const lTetromino = [
       [1, width+1, width*2+1, 2],
@@ -61,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //randomly select a Tetromino and its first rotation
     let random = Math.floor(Math.random()*theTetrominoes.length)
     let current = theTetrominoes[random][currentRotation]
+    let randomColor = Math.round(Math.random()* (colors.length - 1));
 
     //draw playground
 
@@ -76,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function draw() {
       current.forEach(index => {
         squares[currentPosition + index].classList.add('tetromino')
-        squares[currentPosition + index].style.backgroundColor = colors[random]
+        squares[currentPosition + index].style.backgroundColor = colors[randomColor]
+        
       })
     }
     let squares = Array.from(document.querySelectorAll('.grid div'))
@@ -116,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
         current.forEach(index => squares[currentPosition + index].classList.add('taken'))
         //start a new tetromino falling
+        randomColor = nextRandomColor
+        nextRandomColor = Math.round(Math.random()* (colors.length - 1));
         random = nextRandom
         nextRandom = Math.floor(Math.random() * theTetrominoes.length)
         current = theTetrominoes[random][currentRotation]
@@ -214,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       upNextTetrominoes[nextRandom].forEach( index => {
         displaySquares[displayIndex + index].classList.add('tetromino')
-        displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom]
+        displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandomColor]
       })
     }
   
