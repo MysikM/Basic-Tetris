@@ -50,9 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     let currentPosition = 4
     let currentRotation = 0
-  
-    console.log(theTetrominoes[0][0])
-  
+    
     //randomly select a Tetromino and its first rotation
     let random = Math.floor(Math.random()*theTetrominoes.length)
     let current = theTetrominoes[random][currentRotation]
@@ -187,8 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /////////
   
-    
-    
+    let miniGrid = document.querySelector(".mini-grid")
+    for(let i = 0; i< 16; i++){
+        let div =  document.createElement("div");
+        miniGrid.append(div)
+
+    }
     //show up-next tetromino in mini-grid display
     const displaySquares = document.querySelectorAll('.mini-grid div')
     const displayWidth = 4
@@ -217,16 +219,23 @@ document.addEventListener('DOMContentLoaded', () => {
       })
     }
   
+    let music = document.createElement('audio');
+    music.src = "music/music_for_tetris.mp3";
+    music.loop = -1;
+    music.volume = 0.5;
+    document.body.appendChild(music);
     //add functionality to the button
     startBtn.addEventListener('click', () => {
       if (timerId) {
         clearInterval(timerId)
         timerId = null
+        music.pause();
       } else {
         draw()
         timerId = setInterval(moveDown, 1000)
         nextRandom = Math.floor(Math.random()*theTetrominoes.length)
         displayShape()
+        music.play();
       }
     })
   
@@ -249,12 +258,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-  
+    let failMusic = document.createElement('audio');
+    failMusic.src = "music/fail.mp3";
+    failMusic.volume = 0.5;
+    document.body.appendChild(failMusic);
     //game over
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
         scoreDisplay.innerHTML = 'end'
         clearInterval(timerId)
+        music.pause();
+        failMusic.play();
       }
     }
   
