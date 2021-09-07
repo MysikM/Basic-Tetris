@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const scoreDisplay = document.querySelector('#score')
     const startBtn = document.querySelector('#start-button')
+    const speedSlowBtn = document.querySelector("#speedSlow");
+    const speedFastBtn = document.querySelector("#speedFast");
     const width = 10
     let nextRandom = 0
     let nextRandomColor = 0
@@ -218,6 +220,24 @@ document.addEventListener('DOMContentLoaded', () => {
         displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandomColor]
       })
     }
+    let speed = 500;
+
+    speedSlowBtn.addEventListener("click", ()=>{
+      speed += 100;
+      clearInterval(timerId)
+      timerId = setInterval(moveDown, speed);
+      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
+      console.log(speed);
+    })
+    speedFastBtn.addEventListener("click", ()=>{
+      speed -= 100;
+      clearInterval(timerId)
+      timerId = setInterval(moveDown, speed);
+      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
+      console.log(speed);
+
+    })
+
   
     let music = document.createElement('audio');
     music.src = "music/music_for_tetris.mp3";
@@ -232,12 +252,16 @@ document.addEventListener('DOMContentLoaded', () => {
         music.pause();
       } else {
         draw()
-        timerId = setInterval(moveDown, 1000)
+        timerId = setInterval(moveDown, speed)
+        document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
         nextRandom = Math.floor(Math.random()*theTetrominoes.length)
         displayShape()
         music.play();
       }
     })
+
+
+
   
     //add score
     function addScore() {
