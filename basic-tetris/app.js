@@ -83,13 +83,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //draw playground
 
-        for(let i =0; i < 210; i++){
-            let div = document.createElement("div");
-                if(i >= 200){
-                    div.classList.add("taken");
-                }
-            grid.append(div);
-        }        
+   for(let i =0; i < 210; i++){
+        let div = document.createElement("div");
+            if(i >= 200){
+                 div.classList.add("taken");
+             }
+         grid.append(div);
+   }        
   
     
     //draw the Tetromino
@@ -123,8 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    
-  
     //move down function
     function moveDown() {
       undraw()
@@ -250,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
 
-  
+  //music in game
     let music = document.createElement('audio');
     music.src = "music/music_for_tetris.mp3";
     music.loop = -1;
@@ -264,22 +262,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function gameStart(){
       if(startBtn.textContent == "Restart"){
         speed = 500;
-        squares.forEach(i => {
-        i.style.backgroundColor = null;
-        i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
-        scoreDisplay.textContent = 0;
-        })
+        gamePlayGridClean();
       }
-        document.addEventListener('keydown', control)
-        draw()
-        timerId = setInterval(moveDown, speed)
-        document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
-        nextRandom = Math.floor(Math.random()*theTetrominoes.length)
-        displayShape();
+        gamePlay()
         startBtn.setAttribute('disabled', false);
         pauseBtn.removeAttribute('disabled');
         startBtn.textContent = "Restart";
-        music.play();
         speedBtns.forEach(btn =>{
           btn.setAttribute('disabled', false);
         })
@@ -294,17 +282,30 @@ document.addEventListener('DOMContentLoaded', () => {
           document.removeEventListener('keydown', control)
         } 
         else{
-          document.addEventListener('keydown', control)
-          draw()
-          timerId = setInterval(moveDown, speed)
-          document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
-          nextRandom = Math.floor(Math.random()*theTetrominoes.length)
-          displayShape()
+          gamePlay()
           pauseBtn.textContent = "Pause";
-          music.play();
 
         }
       }
+
+      function gamePlay(){
+        document.addEventListener('keydown', control)
+        draw()
+        timerId = setInterval(moveDown, speed)
+        document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
+        nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+        displayShape();
+        music.play();
+      }
+
+      function gamePlayGridClean(){
+        squares.forEach(i => {
+          i.removeAttribute("style");
+          i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
+          scoreDisplay.textContent = 0;
+          })
+      }
+      
       function musicVolume(){
        if( musicBtn.textContent === "music on"){
          music.volume = 0.5;
@@ -357,19 +358,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
+    
+    //music game over
     let failMusic = document.createElement('audio');
     failMusic.src = "music/fail.mp3";
     failMusic.volume = 0.5;
     document.body.appendChild(failMusic);
+    
     //game over
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
         scoreDisplay.innerHTML = 'end'
         clearInterval(timerId)
+        timerId = null;
         music.pause();
         failMusic.play();
         startBtn.removeAttribute("disabled");
-        document.removeEventListener('keydown', control)
+        document.removeEventListener('keydown', control);
+        pauseBtn.setAttribute("disabled", false);
       }
     }
   
