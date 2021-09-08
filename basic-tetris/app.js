@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const speedReduce100Btn = document.querySelector("#speedSlow100");
     const speedIncrease10Btn = document.querySelector("#speedIncrease10");
     const speedIncrease100Btn = document.querySelector("#speedIncrease100");
-
+    const speedBtns = [speedReduce10Btn, speedReduce100Btn, speedIncrease10Btn, speedIncrease100Btn]
     const width = 10
+
     let nextRandom = 0
     let nextRandomColor = 0
     let timerId
@@ -118,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         moveDown()
       }
     }
-    document.addEventListener('keydown', control)
 
     
   
@@ -257,17 +257,17 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener('click', gameStart);
     pauseBtn.addEventListener('click', gamePause);
     musicBtn.addEventListener('click', musicVolume);
+
     function gameStart(){
       if(startBtn.textContent == "Restart"){
-        console.log(squares);
+        speed = 500;
         squares.forEach(i => {
         i.style.backgroundColor = null;
         i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
         scoreDisplay.textContent = 0;
         })
-        console.log(squares);
-
       }
+        document.addEventListener('keydown', control)
         draw()
         timerId = setInterval(moveDown, speed)
         document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
@@ -277,6 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pauseBtn.removeAttribute('disabled');
         startBtn.textContent = "Restart";
         music.play();
+        speedBtns.forEach(btn =>{
+          btn.setAttribute('disabled', false);
+        })
     }
 
     function gamePause(){
@@ -285,8 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
           timerId = null
           music.pause();
           pauseBtn.textContent = "On Pause"
+          document.removeEventListener('keydown', control)
         } 
         else{
+          document.addEventListener('keydown', control)
           draw()
           timerId = setInterval(moveDown, speed)
           document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
@@ -360,7 +365,8 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerId)
         music.pause();
         failMusic.play();
-        startBtn.removeAttribute("disabled")
+        startBtn.removeAttribute("disabled");
+        document.removeEventListener('keydown', control)
       }
     }
   
