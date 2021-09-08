@@ -113,8 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         moveDown()
       }
     }
-    document.addEventListener('keyup', control)
-    // document.addEventListener('keypress', control)
+    document.addEventListener('keydown', control)
 
     
   
@@ -241,21 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     let speed = 500;
 
-    speedSlowBtn.addEventListener("click", ()=>{
-      speed += 100;
-      clearInterval(timerId)
-      timerId = setInterval(moveDown, speed);
-      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
-      console.log(speed);
-    })
-    speedFastBtn.addEventListener("click", ()=>{
-      speed -= 100;
-      clearInterval(timerId)
-      timerId = setInterval(moveDown, speed);
-      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
-      console.log(speed);
-
-    })
+    
 
   
     let music = document.createElement('audio');
@@ -279,6 +264,28 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     })
 
+    let speedReduce10Btn = document.querySelector("#speedSlow10");
+    let speedReduce100Btn = document.querySelector("#speedSlow100");
+    let speedIncrease10Btn = document.querySelector("#speedIncrease10");
+    let speedIncrease100Btn = document.querySelector("#speedIncrease100");
+
+     speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, true)});
+     speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, true)});
+     speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, false)});
+     speedIncrease100Btn.addEventListener("click",()=>{ speedChange(100, false)});
+
+    function speedChange(speedChange, isIncrease){
+      if(isIncrease){
+        speed -= speedChange;
+      }else{
+        speed += speedChange;
+      }
+      clearInterval(timerId)
+      timerId = null
+      timerId = setInterval(moveDown, speed);
+      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+      console.log(speed);
+    }
 
 
   
@@ -288,7 +295,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9]
   
         if(row.every(index => squares[index].classList.contains('taken'))) {
-          score +=10
+          score +=Math.round(1000/speed)
+          if(speed > 100){
+            speed -= 10
+            clearInterval(timerId);
+            timerId = null
+            timerId = setInterval(moveDown, speed)
+            document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
+          }
           scoreDisplay.innerHTML = score
           row.forEach(index => {
             squares[index].classList.remove('taken')
