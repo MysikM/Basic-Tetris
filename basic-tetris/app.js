@@ -1,27 +1,46 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const grid = document.querySelector('.grid')
+    const grid = document.querySelector('.grid');
 
     const scoreDisplay = document.querySelector('#score')
     const startBtn = document.querySelector('#start-button');
     const pauseBtn = document.querySelector('#pause-button');
     const musicBtn = document.querySelector("#music");
+    const restartBtn = document.querySelector("#restart-button")
     const popupButtonOpen = document.querySelector("#rules");
     const popupButtonClose = document.querySelector("#popup-close");
     const speedReduce10Btn = document.querySelector("#speedSlow10");
     const speedReduce100Btn = document.querySelector("#speedSlow100");
     const speedIncrease10Btn = document.querySelector("#speedIncrease10");
     const speedIncrease100Btn = document.querySelector("#speedIncrease100");
-    const speedBtns = [speedReduce10Btn, speedReduce100Btn, speedIncrease10Btn, speedIncrease100Btn]
-    const width = 10
+    const speedBtns = [speedReduce10Btn, speedReduce100Btn, speedIncrease10Btn, speedIncrease100Btn];
+    const width = 10;
 
-    let colors = ["#e63946","#f1faee","#a8dadc","#457b9d", "#1d3557"]
-    let nextRandom = 0
-    let secondNextRandom = 0
+    let colors = ["#e63946","#f1faee","#a8dadc","#457b9d", "#1d3557"];
+    let nextRandom = 0;
+    let secondNextRandom = 0;
     let nextRandomColor = Math.round(Math.random()* (colors.length - 1));
     let secondRandomColor = Math.round(Math.random()* (colors.length - 1));
     let timerId
-    let score = 0
+    let score = 0;
     let speed = 500;
+
+    let currentPosition = 4
+    let currentRotation = 0
+    
+
+    //music in game
+    let music = document.createElement('audio');
+    music.src = "music/music_for_tetris.mp3";
+    music.loop = -1;
+     music.volume = 0.5;
+    document.body.appendChild(music);
+
+     //music game over
+    let failMusic = document.createElement('audio');
+    failMusic.src = "music/fail.mp3";
+    failMusic.volume = 0.5;
+    document.body.appendChild(failMusic);
+
 
     //The Tetrominoes
     const lTetromino = [
@@ -61,10 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino]
   
-    let currentPosition = 4
-    let currentRotation = 0
-    
-    //randomly select a Tetromino and its first rotation
+        //randomly select a Tetromino and its first rotation
     let random = Math.floor(Math.random()*theTetrominoes.length)
     let current = theTetrominoes[random][currentRotation]
     let randomColor = Math.round(Math.random()* (colors.length - 1));
@@ -73,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     popupButtonOpen.addEventListener("click", function(){
       document.querySelector(".popup_show").classList.remove("popup_hidden");
       if(timerId) {
-        pauseBtn.textContent = "On Pause"
+        pauseBtn.textContent = "Play"
       } 
       clearInterval(timerId)
       timerId = null;  
@@ -82,19 +98,24 @@ document.addEventListener('DOMContentLoaded', () => {
     popupButtonClose.addEventListener("click", function(){
       document.querySelector(".popup_show").classList.add("popup_hidden");
     })
-
-
-    //draw playground
-
-   for(let i =0; i < 210; i++){
-        let div = document.createElement("div");
-            if(i >= 200){
-                 div.classList.add("taken");
-             }
-         grid.append(div);
-   }        
-  
+    startBtn.addEventListener('click', gameStart);
+    pauseBtn.addEventListener('click', gamePause);
+    musicBtn.addEventListener('click', musicVolume);
+    restartBtn.addEventListener('click', gameRestart)
+    speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, true)});
+    speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, true)});
+    speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, false)});
+    speedIncrease100Btn.addEventListener("click",()=>{ speedChange(100, false)});
     
+    //draw playground
+   for(let i =0; i < 210; i++){
+      let div = document.createElement("div");
+          if(i >= 200){
+               div.classList.add("taken");
+            }
+       grid.append(div);
+   }        
+   
     //draw the Tetromino
     function draw() {
       current.forEach(index => {
@@ -104,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
     }
     let squares = Array.from(document.querySelectorAll('.grid div'))
+    
     //undraw the Tetromino
     function undraw() {
       current.forEach(index => {
@@ -224,14 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let div =  document.createElement("div");
         block.append(div);
       }
-      console.log(block);
     })
     //show up-next tetromino in mini-grid display
     const displaySquares = document.querySelectorAll('.mini-grid div')
     const displayWidth = 4
     const displayIndex = 0
     const secondDisplayIndex = 16
-  
   
     //the Tetrominos without rotations
     const upNextTetrominoes = [
@@ -244,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     //display the shape in the mini-grid display
     function displayShape() {
-      console.log(displaySquares);
       //remove any trace of a tetromino form the entire grid
       displaySquares.forEach(square => {
         square.classList.remove('tetromino')
@@ -262,28 +281,17 @@ document.addEventListener('DOMContentLoaded', () => {
       })
     }
 
-    
-
-  //music in game
-    let music = document.createElement('audio');
-    music.src = "music/music_for_tetris.mp3";
-    music.loop = -1;
-    music.volume = 0.5;
-    document.body.appendChild(music);
     //add functionality to the button
-    startBtn.addEventListener('click', gameStart);
-    pauseBtn.addEventListener('click', gamePause);
-    musicBtn.addEventListener('click', musicVolume);
-
     function gameStart(){
-      if(startBtn.textContent == "Restart"){
+      if(startBtn.textContent == "Again"){
         gamePlayGridClean();
       }
         gamePlay();
 
+        restartBtn.removeAttribute("disabled");
         startBtn.setAttribute('disabled', false);
         pauseBtn.removeAttribute('disabled');
-        startBtn.textContent = "Restart";
+        startBtn.textContent = "Again";
         speedBtns.forEach(btn =>{
           btn.setAttribute('disabled', false);
         })
@@ -294,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
           clearInterval(timerId)
           timerId = null
           music.pause();
-          pauseBtn.textContent = "On Pause"
+          pauseBtn.textContent = "Play"
           document.removeEventListener('keydown', control)
         } 
         else{
@@ -332,11 +340,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } 
       }
 
-     speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, true)});
-     speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, true)});
-     speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, false)});
-     speedIncrease100Btn.addEventListener("click",()=>{ speedChange(100, false)});
-
     function speedChange(speedChange, isIncrease){
       if(isIncrease){
         speed -= speedChange;
@@ -362,24 +365,47 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
           }
           scoreDisplay.innerHTML = score
+
           row.forEach(index => {
             squares[index].classList.remove('taken')
             squares[index].classList.remove('tetromino')
             squares[index].style.backgroundColor = ''
           })
+
           const squaresRemoved = squares.splice(i, width)
           squares = squaresRemoved.concat(squares)
           squares.forEach(cell => grid.appendChild(cell))
+
+          
         }
       }
     }
-    
-    //music game over
-    let failMusic = document.createElement('audio');
-    failMusic.src = "music/fail.mp3";
-    failMusic.volume = 0.5;
-    document.body.appendChild(failMusic);
 
+    function gameRestart(){
+      if(timerId){
+        clearInterval(timerId)
+        timerId = null
+        music.pause();
+      } 
+
+      pauseBtn.textContent = "Pause";
+      speed = 500;
+      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+      score = 0;
+      scoreDisplay.textContent = score;
+
+      random = nextRandom
+      nextRandom = secondNextRandom
+      secondNextRandom = Math.floor(Math.random() * theTetrominoes.length)
+      current = theTetrominoes[random][currentRotation]
+
+      currentRotation = 0;
+      currentPosition = 4;
+      gamePlayGridClean();
+      gamePlay();
+
+    }
+    
     //game over
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
@@ -396,6 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startBtn.removeAttribute("disabled");
         document.removeEventListener('keydown', control);
         pauseBtn.setAttribute("disabled", false);
+        restartBtn.setAttribute("disabled", false);
         speedBtns.forEach(i =>{
           i.removeAttribute('disabled')
         })
