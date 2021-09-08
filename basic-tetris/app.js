@@ -277,10 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function gameStart(){
       if(startBtn.textContent == "Restart"){
-        speed = 500;
         gamePlayGridClean();
       }
-        gamePlay()
+        gamePlay();
+
         startBtn.setAttribute('disabled', false);
         pauseBtn.removeAttribute('disabled');
         startBtn.textContent = "Restart";
@@ -300,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
         else{
           gamePlay()
           pauseBtn.textContent = "Pause";
-
         }
       }
 
@@ -384,14 +383,22 @@ document.addEventListener('DOMContentLoaded', () => {
     //game over
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
-        scoreDisplay.innerHTML = 'end'
+        scoreDisplay.innerHTML = 'end';
+        document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+
+
         clearInterval(timerId)
         timerId = null;
         music.pause();
+
         failMusic.play();
+
         startBtn.removeAttribute("disabled");
         document.removeEventListener('keydown', control);
         pauseBtn.setAttribute("disabled", false);
+        speedBtns.forEach(i =>{
+          i.removeAttribute('disabled')
+        })
       }
     }
   
