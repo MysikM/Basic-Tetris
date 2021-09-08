@@ -53,12 +53,16 @@ body{
   
   
   .mini-grid {
+    margin-bottom: 20px;
     margin-left: 50px;
     width: 80px;
     height: 80px;
     display: flex;
     flex-wrap: wrap;
     background-color: gold;
+  }
+  .mini-grid:last-child{
+    margin-bottom: 0;  
   }
   
   .mini-grid div {

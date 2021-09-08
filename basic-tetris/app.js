@@ -14,11 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const speedBtns = [speedReduce10Btn, speedReduce100Btn, speedIncrease10Btn, speedIncrease100Btn]
     const width = 10
 
+    let colors = ["#e63946","#f1faee","#a8dadc","#457b9d", "#1d3557"]
     let nextRandom = 0
-    let nextRandomColor = 0
+    let secondNextRandom = 0
+    let nextRandomColor = Math.round(Math.random()* (colors.length - 1));
+    let secondRandomColor = Math.round(Math.random()* (colors.length - 1));
     let timerId
     let score = 0
-    let colors = ["#e63946","#f1faee","#a8dadc","#457b9d", "#1d3557"]
+    let speed = 500;
 
     //The Tetrominoes
     const lTetromino = [
@@ -137,9 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
         current.forEach(index => squares[currentPosition + index].classList.add('taken'))
         //start a new tetromino falling
         randomColor = nextRandomColor
-        nextRandomColor = Math.round(Math.random()* (colors.length - 1));
+        nextRandomColor = secondRandomColor
+        secondRandomColor = Math.round(Math.random()* (colors.length - 1));
+
         random = nextRandom
-        nextRandom = Math.floor(Math.random() * theTetrominoes.length)
+        nextRandom = secondNextRandom
+        secondNextRandom = Math.floor(Math.random() * theTetrominoes.length)
         current = theTetrominoes[random][currentRotation]
         currentPosition = 4
         draw()
@@ -210,16 +216,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /////////
   
-    let miniGrid = document.querySelector(".mini-grid")
-    for(let i = 0; i< 16; i++){
+    // mini-grid create
+    let miniGrids = document.querySelectorAll(".mini-grid-container .mini-grid")
+    
+    miniGrids.forEach(block =>{
+      for(let i = 0; i< 16; i++){
         let div =  document.createElement("div");
-        miniGrid.append(div)
-
-    }
+        block.append(div);
+      }
+      console.log(block);
+    })
     //show up-next tetromino in mini-grid display
     const displaySquares = document.querySelectorAll('.mini-grid div')
     const displayWidth = 4
     const displayIndex = 0
+    const secondDisplayIndex = 16
   
   
     //the Tetrominos without rotations
@@ -233,18 +244,23 @@ document.addEventListener('DOMContentLoaded', () => {
   
     //display the shape in the mini-grid display
     function displayShape() {
+      console.log(displaySquares);
       //remove any trace of a tetromino form the entire grid
       displaySquares.forEach(square => {
         square.classList.remove('tetromino')
         square.style.backgroundColor = ''
       })
+
       upNextTetrominoes[nextRandom].forEach( index => {
         displaySquares[displayIndex + index].classList.add('tetromino')
-        displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandomColor]
-        
+        displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandomColor]       
+      })
+
+      upNextTetrominoes[secondNextRandom].forEach( index => {
+        displaySquares[secondDisplayIndex + index].classList.add('tetromino')
+        displaySquares[secondDisplayIndex + index].style.backgroundColor = colors[secondRandomColor]       
       })
     }
-    let speed = 500;
 
     
 
@@ -364,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
     failMusic.src = "music/fail.mp3";
     failMusic.volume = 0.5;
     document.body.appendChild(failMusic);
-    
+
     //game over
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
