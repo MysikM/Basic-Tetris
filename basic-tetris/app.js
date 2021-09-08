@@ -37,10 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(music);
 
      //music game over
-    let failMusic = document.createElement('audio');
-    failMusic.src = "music/fail.mp3";
-    failMusic.volume = 0.5;
-    document.body.appendChild(failMusic);
+    let musicFail = document.createElement('audio');
+    musicFail.src = "music/fail.mp3";
+    musicFail.volume = 0.5;
+    document.body.appendChild(musicFail);
+
+    let musicAddScore = document.createElement('audio');
+    musicAddScore.src = "music/add_score.mp3";
+    musicAddScore.volume = 0.5;
+    document.body.appendChild(musicAddScore);
 
 
     //The Tetrominoes
@@ -373,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
         if(row.every(index => squares[index].classList.contains('taken'))) {
           score +=Math.round(1000/speed)
+          musicAddScore.play();
           if(speed > 100){
             speed -= 10
             clearInterval(timerId);
@@ -437,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timerId = null;
         music.pause();
 
-        failMusic.play();
+        musicFail.play();
 
         startBtn.removeAttribute("disabled");
         document.removeEventListener('keydown', control);
