@@ -2,11 +2,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid')
 
     const scoreDisplay = document.querySelector('#score')
-    const startBtn = document.querySelector('#start-button')
-    const speedSlowBtn = document.querySelector("#speedSlow");
-    const speedFastBtn = document.querySelector("#speedFast");
+    const startBtn = document.querySelector('#start-button');
+    const pauseBtn = document.querySelector('#pause-button');
+    const musicBtn = document.querySelector("#music");
     const popupButtonOpen = document.querySelector("#rules");
     const popupButtonClose = document.querySelector("#popup-close");
+    const speedReduce10Btn = document.querySelector("#speedSlow10");
+    const speedReduce100Btn = document.querySelector("#speedSlow100");
+    const speedIncrease10Btn = document.querySelector("#speedIncrease10");
+    const speedIncrease100Btn = document.querySelector("#speedIncrease100");
+
     const width = 10
     let nextRandom = 0
     let nextRandomColor = 0
@@ -249,25 +254,48 @@ document.addEventListener('DOMContentLoaded', () => {
     music.volume = 0.5;
     document.body.appendChild(music);
     //add functionality to the button
-    startBtn.addEventListener('click', () => {
-      if (timerId) {
-        clearInterval(timerId)
-        timerId = null
-        music.pause();
-      } else {
+    startBtn.addEventListener('click', gameStart);
+    pauseBtn.addEventListener('click', gamePause);
+    musicBtn.addEventListener('click', musicVolume);
+    function gameStart(){
         draw()
         timerId = setInterval(moveDown, speed)
         document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
         nextRandom = Math.floor(Math.random()*theTetrominoes.length)
-        displayShape()
+        displayShape();
+        startBtn.setAttribute('disabled', false);
+        pauseBtn.removeAttribute('disabled');
         music.play();
-      }
-    })
+    }
 
-    let speedReduce10Btn = document.querySelector("#speedSlow10");
-    let speedReduce100Btn = document.querySelector("#speedSlow100");
-    let speedIncrease10Btn = document.querySelector("#speedIncrease10");
-    let speedIncrease100Btn = document.querySelector("#speedIncrease100");
+    function gamePause(){
+        if(timerId){
+          clearInterval(timerId)
+          timerId = null
+          music.pause();
+          pauseBtn.textContent = "On Pause"
+        } 
+        else{
+          draw()
+          timerId = setInterval(moveDown, speed)
+          document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
+          nextRandom = Math.floor(Math.random()*theTetrominoes.length)
+          displayShape()
+          pauseBtn.textContent = "Pause";
+          music.play();
+
+        }
+      }
+      function musicVolume(){
+       if( musicBtn.textContent === "music on"){
+         music.volume = .5;
+         musicBtn.textContent = "music off" 
+        } 
+        else{
+        music.volume = 0;
+        musicBtn.textContent = "music on" 
+        } 
+      }
 
      speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, true)});
      speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, true)});
