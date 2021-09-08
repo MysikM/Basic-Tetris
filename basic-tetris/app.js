@@ -5,12 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.querySelector('#start-button')
     const speedSlowBtn = document.querySelector("#speedSlow");
     const speedFastBtn = document.querySelector("#speedFast");
+    const popupButtonOpen = document.querySelector("#rules");
+    const popupButtonClose = document.querySelector("#popup-close");
     const width = 10
     let nextRandom = 0
     let nextRandomColor = 0
     let timerId
     let score = 0
-    let colors = ["#FF4900","#FFD200","#3714B0","#00AF64", "#B40097"]
+    let colors = ["#e63946","#f1faee","#a8dadc","#457b9d", "#1d3557"]
 
     //The Tetrominoes
     const lTetromino = [
@@ -58,6 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let current = theTetrominoes[random][currentRotation]
     let randomColor = Math.round(Math.random()* (colors.length - 1));
 
+    //popup rules
+    popupButtonOpen.addEventListener("click", function(){
+      document.querySelector(".popup_show").classList.remove("popup_hidden");
+      clearInterval(timerId)
+      timerId = null
+
+    })
+    popupButtonClose.addEventListener("click", function(){
+      document.querySelector(".popup_show").classList.add("popup_hidden");
+    })
+
+
     //draw playground
 
         for(let i =0; i < 210; i++){
@@ -68,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.append(div);
         }        
   
+    
     //draw the Tetromino
     function draw() {
       current.forEach(index => {
@@ -99,6 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     document.addEventListener('keyup', control)
+    // document.addEventListener('keypress', control)
+
+    
   
     //move down function
     function moveDown() {
@@ -218,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       upNextTetrominoes[nextRandom].forEach( index => {
         displaySquares[displayIndex + index].classList.add('tetromino')
         displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandomColor]
+        
       })
     }
     let speed = 500;

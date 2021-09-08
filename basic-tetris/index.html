@@ -8,20 +8,35 @@
   </head>
   <body>
 
-    <h3>Score:<span id="score">0</span></h3>
-    <button id="start-button">Start/Pause</button>
+    <div class ="wrapper">
+        <section >
+          <h3>Score:<span id="score">0</span></h3>
+            <button id="start-button">Start/Pause</button>
+            <button id="rules">Rules</button>
+            <div class="container">
+              <div class="grid"></div>
+              <div class="mini-grid"></div>
+            </div>
 
-    <div class="container">
-      <div class="grid"></div>
-      <div class="mini-grid"></div>
-    </div>
+            <div class="speed-controller">
+              <button id="speedSlow">slow</button>
+              <span id="speed">Current speed: 0</span>
+              <button id="speedFast">fast</button>
+            </section>
+          </div>
+          <section class="video">
+            <span>Tutorial video</span>
+          <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/rAUn1Lom6dw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </section>
 
-    <div class="speed-controller">
-      <button id="speedSlow">slow</button>
-      <span id="speed">Current speed:</span>
-      <button id="speedFast">fast</button>
-    </div>
-
+          <div class="popup_show">
+            <h3>Tetris game</h3>
+            <h2>rule:</h2>
+            <p>Use the UP key to rotate your tetromino</p>
+            <p>Use the LEFT and RIGHT to move across the board</p>
+            <p>Pressing DOWN will speed up the tetromino</p>
+            <button id="popup-close">close</button>
+          </div>
 
   </body>
 </html>

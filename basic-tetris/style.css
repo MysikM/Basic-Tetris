@@ -1,14 +1,45 @@
+body{
+  background-color: black;
+  color: white;
+}
 .container {
     display: flex;
   }
   
-  
+.wrapper{
+  display: flex;
+  justify-content: center;
+} 
+.video{
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.popup_show{
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color:white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.popup_hidden{
+  display: none;
+}
   .grid {
     width: 200px;
     height: 400px;
     display: flex;
     flex-wrap: wrap;
-    background-color: yellow;
+    background-color: gold;
   }
   
   .grid div {
@@ -27,7 +58,7 @@
     height: 80px;
     display: flex;
     flex-wrap: wrap;
-    background-color: yellow;
+    background-color: gold;
   }
   
   .mini-grid div {
