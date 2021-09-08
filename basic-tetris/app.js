@@ -69,8 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //popup rules
     popupButtonOpen.addEventListener("click", function(){
       document.querySelector(".popup_show").classList.remove("popup_hidden");
+      if(timerId) {
+        pauseBtn.textContent = "On Pause"
+      } 
       clearInterval(timerId)
-      timerId = null
+      timerId = null;  
 
     })
     popupButtonClose.addEventListener("click", function(){
