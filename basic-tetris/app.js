@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.querySelector('#start-button');
     const pauseBtn = document.querySelector('#pause-button');
     const musicBtn = document.querySelector("#music");
-    const restartBtn = document.querySelector("#restart-button")
+    const restartBtn = document.querySelector("#restart-button");
+    const fullscreenBtn = document.querySelector("#fullscreen");
     const popupButtonOpen = document.querySelector("#rules");
     const popupButtonClose = document.querySelector("#popup-close");
     const speedReduce10Btn = document.querySelector("#speedSlow10");
@@ -86,22 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let randomColor = Math.round(Math.random()* (colors.length - 1));
 
     //popup rules
-    popupButtonOpen.addEventListener("click", function(){
-      document.querySelector(".popup_show").classList.remove("popup_hidden");
-      if(timerId) {
-        pauseBtn.textContent = "Play"
-      } 
-      clearInterval(timerId)
-      timerId = null;  
-
-    })
-    popupButtonClose.addEventListener("click", function(){
-      document.querySelector(".popup_show").classList.add("popup_hidden");
-    })
+    popupButtonOpen.addEventListener("click", gameRulesSwitchOn)
+    popupButtonClose.addEventListener("click", gameRulesSwitchOff)
+    window.addEventListener('keyup', controlMenu);
     startBtn.addEventListener('click', gameStart);
     pauseBtn.addEventListener('click', gamePause);
     musicBtn.addEventListener('click', musicVolume);
-    restartBtn.addEventListener('click', gameRestart)
+    restartBtn.addEventListener('click', gameRestart);
+    fullscreenBtn.addEventListener('click', gameFullscreen);
     speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, true)});
     speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, true)});
     speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, false)});
@@ -115,7 +108,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
        grid.append(div);
    }        
-   
+
+   function gameRulesSwitchOn(){
+    document.querySelector(".popup_show").classList.remove("popup_hidden");
+    if(timerId) {
+      pauseBtn.textContent = "Play"
+    } 
+    clearInterval(timerId)
+    timerId = null; 
+    music.pause(); 
+   }
+
+   function gameRulesSwitchOff(){
+    document.querySelector(".popup_show").classList.add("popup_hidden");
+  }
     //draw the Tetromino
     function draw() {
       current.forEach(index => {
@@ -134,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
       })
     }
-  
-    //assign functions to keyCodes
+
     function control(e) {
+      e.preventDefault();
       if(e.keyCode === 37) {
-        moveLeft()
+        moveLeft();
       } else if (e.keyCode === 38) {
         rotate()
       } else if (e.keyCode === 39) {
@@ -146,6 +152,15 @@ document.addEventListener('DOMContentLoaded', () => {
       } else if (e.keyCode === 40) {
         moveDown()
       }
+    }
+
+    function controlMenu(e){
+      e.preventDefault();
+      if(e.key === "Escape"){
+        gameRulesSwitchOff();
+      }
+      if(e.keyCode === 73)
+          gameRulesSwitchOn();
     }
 
     //move down function
@@ -427,6 +442,10 @@ document.addEventListener('DOMContentLoaded', () => {
           i.removeAttribute('disabled')
         })
       }
+    }
+
+    function gameFullscreen(){
+      document.fullscreenElement == null ? document.documentElement.requestFullscreen() : document.exitFullscreen();
     }
   
   })
