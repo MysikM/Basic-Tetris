@@ -258,6 +258,16 @@ document.addEventListener('DOMContentLoaded', () => {
     pauseBtn.addEventListener('click', gamePause);
     musicBtn.addEventListener('click', musicVolume);
     function gameStart(){
+      if(startBtn.textContent == "Restart"){
+        console.log(squares);
+        squares.forEach(i => {
+        i.style.backgroundColor = null;
+        i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
+        scoreDisplay.textContent = 0;
+        })
+        console.log(squares);
+
+      }
         draw()
         timerId = setInterval(moveDown, speed)
         document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
@@ -265,6 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayShape();
         startBtn.setAttribute('disabled', false);
         pauseBtn.removeAttribute('disabled');
+        startBtn.textContent = "Restart";
         music.play();
     }
 
@@ -288,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       function musicVolume(){
        if( musicBtn.textContent === "music on"){
-         music.volume = .5;
+         music.volume = 0.5;
          musicBtn.textContent = "music off" 
         } 
         else{
@@ -305,17 +316,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function speedChange(speedChange, isIncrease){
       if(isIncrease){
         speed -= speedChange;
+        speed <= 100 ? speed = 100 : speed;
       }else{
         speed += speedChange;
       }
-      clearInterval(timerId)
-      timerId = null
-      timerId = setInterval(moveDown, speed);
       document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
-      console.log(speed);
     }
-
-
   
     //add score
     function addScore() {
@@ -354,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timerId)
         music.pause();
         failMusic.play();
+        startBtn.removeAttribute("disabled")
       }
     }
   
