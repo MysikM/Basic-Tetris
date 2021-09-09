@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timerId = null
         music.pause();
       
-
+      alert(`You click restart game, your score in last game ${score}`);
       pauseBtn.textContent = "Pause";
       pauseBtn.setAttribute("disabled", false);
       startBtn.removeAttribute("disabled");
@@ -449,15 +449,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
-        scoreDisplay.innerHTML = 'end';
         document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
-
 
         clearInterval(timerId);
         timerId = null;
         music.pause();
 
         musicFail.play();
+
+        alert(`You lose, your score ${score}`);
 
         startBtn.removeAttribute("disabled");
         document.removeEventListener('keydown', control);
