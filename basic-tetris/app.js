@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('keydown', control);
         draw();
         timerId = setInterval(moveDown, speed);
-        document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+        document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
         tetrominosNextRandom[0] = Math.floor(Math.random()*theTetrominoes.length);
         displayShape();
         music.play();
@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }else{
         speed += speedChange;
       }
-      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+      document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
     }
   
     //add score
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId);
             timerId = null
             timerId = setInterval(moveDown, speed)
-            document.getElementById("speed").textContent = `Current speed: ${speed/1000}`
+            document.getElementById("speed").textContent = `Delay speed: ${speed/1000}`
           }
 
           scoreDisplay.innerHTML = score;
@@ -425,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       pauseBtn.textContent = "Pause";
       speed = 500;
-      document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+      document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
       score = 0;
       scoreDisplay.textContent = score;
 
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
         scoreDisplay.innerHTML = 'end';
-        document.getElementById("speed").textContent = `Current speed: ${speed/1000}`;
+        document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
 
 
         clearInterval(timerId);
