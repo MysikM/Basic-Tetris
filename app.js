@@ -331,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         speedBtns.forEach(btn =>{
           btn.setAttribute('disabled', false);
         })
+
     }
 
     function gamePause(){
@@ -377,8 +378,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } 
         else{
         music.volume = 0;
-        musicFail = 0;
-        musicAddScore = 0;
+        musicFail.volume = 0;
+        musicAddScore.volume = 0;
 
         musicBtn.textContent = "music on" 
         } 
@@ -439,10 +440,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       speed = 500;
       document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
-      score = 0;
-      scoreDisplay.textContent = score;
+
 
       pauseBtn.textContent = "Pause";
+
       pauseBtn.setAttribute("disabled", false);
       startBtn.removeAttribute("disabled");
       speedBtns.forEach(i =>{
@@ -454,6 +455,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       gamePlayGridClean();
 
+      score = 0;
+      scoreDisplay.textContent = score;
     }
     
     function gameOver() {
@@ -463,20 +466,24 @@ document.addEventListener('DOMContentLoaded', () => {
         timerId = null;
 
         music.pause();
-        musicFail.play();
-
-        alert(`You lose, your score ${score}`);
 
         speed = 500;
         document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
+        
+        document.removeEventListener('keydown', control);
 
         startBtn.removeAttribute("disabled");
-        document.removeEventListener('keydown', control);
+
         pauseBtn.setAttribute("disabled", false);
         restartBtn.setAttribute("disabled", false);
         speedBtns.forEach(i =>{
           i.removeAttribute('disabled');
         })
+        
+        musicFail.play();
+
+        alert(`You lose, your score ${score}`);
+
       }
     }
 
