@@ -192,9 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
         currentPosition = 4;
         current = theTetrominoes[random][currentRotation];
 
+        draw();
         displayShape();
         addScore();
         gameOver();
+        undraw();
       }
     }
   
@@ -414,7 +416,6 @@ document.addEventListener('DOMContentLoaded', () => {
           squares = squaresRemoved.concat(squares);
           squares.forEach(cell => grid.appendChild(cell));
 
-          undraw();
           draw();
           
         }
@@ -449,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
-        document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
 
         clearInterval(timerId);
         timerId = null;
@@ -458,6 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
         musicFail.play();
 
         alert(`You lose, your score ${score}`);
+
+        speed = 500;
+        document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
 
         startBtn.removeAttribute("disabled");
         document.removeEventListener('keydown', control);
