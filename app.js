@@ -131,9 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
     music.pause(); 
    }
 
-   function gameRulesSwitchOff(){
-    document.querySelector(".popup_show").classList.add("popup_hidden");
-  }
+    function gameRulesSwitchOff(){
+      document.querySelector(".popup_show").classList.add("popup_hidden");
+    }
     //draw the Tetromino
     function draw() {
       current.forEach(index => {
@@ -192,12 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         currentPosition = 4;
         current = theTetrominoes[random][currentRotation];
-
-        draw();
+        
+        undraw();
         displayShape();
         addScore();
         gameOver();
-        undraw();
+        draw();
       }
     }
   
@@ -423,6 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
           squares = squaresRemoved.concat(squares);
           squares.forEach(cell => grid.appendChild(cell));
 
+          undraw();
           draw();
           
         }
