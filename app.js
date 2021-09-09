@@ -126,7 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
       pauseBtn.textContent = "Play";
     } 
     clearInterval(timerId)
-    timerId = null; 
+    timerId = null;
+
     music.pause(); 
    }
 
@@ -296,11 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
     //display the shape in the mini-grid display
     function displayShape() {
-      //remove any trace of a tetromino form the entire grid
-      displaySquares.forEach(square => {
-        square.classList.remove('tetromino');
-        square.style.backgroundColor = '';
-      })
+      displayShapeRemove();
 
       for(let i = 0; i< tetrominosNextRandom.length; i++){
         upNextTetrominoes[tetrominosNextRandom[i]].forEach( index => {
@@ -311,7 +308,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       displayIndex = 0;
       
+    }
 
+    function displayShapeRemove(){
+        displaySquares.forEach(square => {
+        square.classList.remove('tetromino');
+        square.style.backgroundColor = '';
+      })
     }
 
     //add functionality to the button
@@ -361,19 +364,22 @@ document.addEventListener('DOMContentLoaded', () => {
           scoreDisplay.textContent = 0;
           })
 
-          displaySquares.forEach(square => {
-            square.classList.remove('tetromino');
-            square.style.backgroundColor = '';
-          })
+          displayShapeRemove();
       }
       
       function musicVolume(){
        if( musicBtn.textContent === "music on"){
          music.volume = 0.5;
+         musicFail.volume = 0.5;
+         musicAddScore.volume = 0.5;
+
          musicBtn.textContent = "music off" 
         } 
         else{
         music.volume = 0;
+        musicFail = 0;
+        musicAddScore = 0;
+
         musicBtn.textContent = "music on" 
         } 
       }
@@ -424,23 +430,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function gameRestart(){
       
-        clearInterval(timerId)
-        timerId = null
-        music.pause();
+      clearInterval(timerId)
+      timerId = null
+        
+      music.pause();
       
       alert(`You click restart game, your score in last game ${score}`);
+
+      speed = 500;
+      document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
+      score = 0;
+      scoreDisplay.textContent = score;
+
       pauseBtn.textContent = "Pause";
       pauseBtn.setAttribute("disabled", false);
       startBtn.removeAttribute("disabled");
       speedBtns.forEach(i =>{
         i.removeAttribute('disabled');
       })
-      speed = 500;
-      document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
-      score = 0;
-      scoreDisplay.textContent = score;
-
-
+      
       currentRotation = 0;
       currentPosition = 4;
 
@@ -453,8 +461,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         clearInterval(timerId);
         timerId = null;
-        music.pause();
 
+        music.pause();
         musicFail.play();
 
         alert(`You lose, your score ${score}`);
