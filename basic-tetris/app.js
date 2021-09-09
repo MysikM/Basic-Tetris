@@ -358,6 +358,11 @@ document.addEventListener('DOMContentLoaded', () => {
           i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
           scoreDisplay.textContent = 0;
           })
+
+          displaySquares.forEach(square => {
+            square.classList.remove('tetromino');
+            square.style.backgroundColor = '';
+          })
       }
       
       function musicVolume(){
@@ -417,25 +422,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function gameRestart(){
-      if(timerId){
+      
         clearInterval(timerId)
         timerId = null
         music.pause();
-      } 
+      
 
       pauseBtn.textContent = "Pause";
+      pauseBtn.setAttribute("disabled", false);
+      startBtn.removeAttribute("disabled");
+      speedBtns.forEach(i =>{
+        i.removeAttribute('disabled');
+      })
       speed = 500;
       document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
       score = 0;
       scoreDisplay.textContent = score;
 
-      tetrominoNextGenerator();
 
       currentRotation = 0;
       currentPosition = 4;
 
       gamePlayGridClean();
-      gamePlay();
 
     }
     

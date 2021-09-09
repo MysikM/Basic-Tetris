@@ -37,19 +37,6 @@ button::after {
 button:hover {
   color: #d28e5f;
 }
-button:disabled{
-  opacity: 0.2;
-  transition: 0.5s;
-}
-button:disabled:hover{
-  cursor: auto;
-  color: white;
-}
-button:disabled::after{
-  width: 0;
-  height: 0;
-  transition: 0.5s;
-}
 
 
 .container {
