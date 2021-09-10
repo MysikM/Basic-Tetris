@@ -429,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
     function gameRestart(){
       
+      alert(`You click restart game, your score in last game ${score}`);
       settingsReset();
 
       currentRotation = 0;
@@ -438,17 +439,16 @@ document.addEventListener('DOMContentLoaded', () => {
       
       score = 0;
       scoreDisplay.textContent = score;
-      alert(`You click restart game, your score in last game ${score}`);
     }
     
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
 
+        alert(`You lose, your score ${score}`);
         settingsReset();
         
         musicFail.play();
 
-        alert(`You lose, your score ${score}`);
 
       }
     }
