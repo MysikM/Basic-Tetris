@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, false)});
     speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, true)});
     speedIncrease100Btn.addEventListener("click",()=>{ speedChange(100, true)});
-    
+  
     //draw playground
    for(let i =0; i < 210; i++){
       let div = document.createElement("div");
@@ -118,7 +118,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
    let squares = Array.from(document.querySelectorAll('.grid div'));
 
+   function controlMenu(e){
+    e.preventDefault();
+    if(e.key === "Escape"){
+      gameRulesSwitchOff();
+    }
+    if(e.keyCode === 73)
+      gameRulesSwitchOn();
+  }
 
+  function gameFullscreen(){
+    document.fullscreenElement == null ? document.documentElement.requestFullscreen() : document.exitFullscreen();
+  }
    // popup
    function gameRulesSwitchOn(){
     document.querySelector(".popup_show").classList.remove("popup_hidden");
@@ -134,6 +145,48 @@ document.addEventListener('DOMContentLoaded', () => {
     function gameRulesSwitchOff(){
       document.querySelector(".popup_show").classList.add("popup_hidden");
     }
+
+    function musicVolume(){
+      if( musicBtn.textContent === "music on"){
+        music.volume = 0.5;
+        musicFail.volume = 0.5;
+        musicAddScore.volume = 0.5;
+
+        musicBtn.textContent = "music off" 
+       } 
+       else{
+       music.volume = 0;
+       musicFail.volume = 0;
+       musicAddScore.volume = 0;
+
+       musicBtn.textContent = "music on" 
+       } 
+     }
+
+    function control(e) {
+      e.preventDefault();
+      if(e.keyCode === 37) {
+        moveLeft();
+      } else if (e.keyCode === 38) {
+        rotate();
+      } else if (e.keyCode === 39) {
+        moveRight();
+      } else if (e.keyCode === 40) {
+        moveDown();
+      }
+    }
+
+    function speedChange(speedChange, isIncrease){
+      if(isIncrease){
+        speed -= speedChange;
+        speed <= 100 ? speed = 100 : speed;
+      }else{
+        speed >= 2900 ? speed = 2900: speed;
+        speed += speedChange;
+      }
+      document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
+    }
+
     //draw the Tetromino
     function draw() {
       current.forEach(index => {
@@ -152,36 +205,62 @@ document.addEventListener('DOMContentLoaded', () => {
       })
     }
 
-    function control(e) {
-      e.preventDefault();
-      if(e.keyCode === 37) {
-        moveLeft();
-      } else if (e.keyCode === 38) {
-        rotate();
-      } else if (e.keyCode === 39) {
-        moveRight();
-      } else if (e.keyCode === 40) {
-        moveDown();
-      }
+    function tetrominoNextGenerator(){
+      randomColor = tetrominosRandomColor[0];
+      tetrominosRandomColor[0] = tetrominosRandomColor[1];
+      tetrominosRandomColor[1] = Math.round(Math.random()* (colors.length - 1));
+
+      random = tetrominosNextRandom[0];
+      tetrominosNextRandom[0] = tetrominosNextRandom[1];
+      tetrominosNextRandom[1] = Math.floor(Math.random() * theTetrominoes.length);
     }
 
-    function controlMenu(e){
-      e.preventDefault();
-      if(e.key === "Escape"){
-        gameRulesSwitchOff();
+        // mini-grid create
+    let miniGrids = document.querySelectorAll(".mini-grid-container .mini-grid")
+    
+    miniGrids.forEach(block =>{
+      for(let i = 0; i< 16; i++){
+        let div =  document.createElement("div");
+        block.append(div);
       }
-      if(e.keyCode === 73)
-        gameRulesSwitchOn();
-    }
-
-    //move down function
-    function moveDown() {
-      undraw();
-      currentPosition += width;
-      draw();
-      freeze();
-    }
+    })
+    //show up-next tetromino in mini-grid display
+    const displaySquares = document.querySelectorAll('.mini-grid div');
+    const displayWidth = 4;
+    let displayIndex = 0;
+    let secondDisplayIndex = 16;
   
+    //the Tetrominos without rotations
+    const upNextTetrominoes = [
+      [1, displayWidth+1, displayWidth*2+1, 2], //lTetromino
+      [0, displayWidth, displayWidth+1, displayWidth*2+1], //zTetromino
+      [1, displayWidth, displayWidth+1, displayWidth+2], //tTetromino
+      [0, 1, displayWidth, displayWidth+1], //oTetromino
+      [1, displayWidth+1, displayWidth*2+1, displayWidth*3+1] //iTetromino
+    ]
+  
+    //display the shape in the mini-grid display
+    function displayShape() {
+      displayShapeRemove();
+
+      for(let i = 0; i< tetrominosNextRandom.length; i++){
+        upNextTetrominoes[tetrominosNextRandom[i]].forEach( index => {
+          displaySquares[displayIndex + index].classList.add('tetromino');
+          displaySquares[displayIndex + index].style.backgroundColor = colors[tetrominosRandomColor[i]];      
+        })
+        displayIndex += secondDisplayIndex;
+      }
+      displayIndex = 0;
+      
+    }
+
+    function displayShapeRemove(){
+        displaySquares.forEach(square => {
+        square.classList.remove('tetromino');
+        square.style.backgroundColor = '';
+      })
+    }
+
     //freeze function
     function freeze() {
       if(current.some(index => squares[currentPosition + index + width].classList.contains('taken'))) {
@@ -200,16 +279,15 @@ document.addEventListener('DOMContentLoaded', () => {
         draw();
       }
     }
-  
-    function tetrominoNextGenerator(){
-      randomColor = tetrominosRandomColor[0];
-      tetrominosRandomColor[0] = tetrominosRandomColor[1];
-      tetrominosRandomColor[1] = Math.round(Math.random()* (colors.length - 1));
 
-      random = tetrominosNextRandom[0];
-      tetrominosNextRandom[0] = tetrominosNextRandom[1];
-      tetrominosNextRandom[1] = Math.floor(Math.random() * theTetrominoes.length);
+    //move down function
+    function moveDown() {
+      undraw();
+      currentPosition += width;
+      draw();
+      freeze();
     }
+  
     //move the tetromino left, unless is at the edge or there is a blockage
     function moveLeft() {
       undraw();
@@ -271,52 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /////////
   
-    // mini-grid create
-    let miniGrids = document.querySelectorAll(".mini-grid-container .mini-grid")
-    
-    miniGrids.forEach(block =>{
-      for(let i = 0; i< 16; i++){
-        let div =  document.createElement("div");
-        block.append(div);
-      }
-    })
-    //show up-next tetromino in mini-grid display
-    const displaySquares = document.querySelectorAll('.mini-grid div');
-    const displayWidth = 4;
-    let displayIndex = 0;
-    let secondDisplayIndex = 16;
-  
-    //the Tetrominos without rotations
-    const upNextTetrominoes = [
-      [1, displayWidth+1, displayWidth*2+1, 2], //lTetromino
-      [0, displayWidth, displayWidth+1, displayWidth*2+1], //zTetromino
-      [1, displayWidth, displayWidth+1, displayWidth+2], //tTetromino
-      [0, 1, displayWidth, displayWidth+1], //oTetromino
-      [1, displayWidth+1, displayWidth*2+1, displayWidth*3+1] //iTetromino
-    ]
-  
-    //display the shape in the mini-grid display
-    function displayShape() {
-      displayShapeRemove();
-
-      for(let i = 0; i< tetrominosNextRandom.length; i++){
-        upNextTetrominoes[tetrominosNextRandom[i]].forEach( index => {
-          displaySquares[displayIndex + index].classList.add('tetromino');
-          displaySquares[displayIndex + index].style.backgroundColor = colors[tetrominosRandomColor[i]];      
-        })
-        displayIndex += secondDisplayIndex;
-      }
-      displayIndex = 0;
-      
-    }
-
-    function displayShapeRemove(){
-        displaySquares.forEach(square => {
-        square.classList.remove('tetromino');
-        square.style.backgroundColor = '';
-      })
-    }
-
     //add functionality to the button
     function gameStart(){
       if(startBtn.textContent == "Again"){
@@ -358,45 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayShape();
         music.play();
       }
-
-      function gamePlayGridClean(){
-        squares.forEach(i => {
-          i.removeAttribute("style");
-          i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
-          scoreDisplay.textContent = 0;
-          })
-
-          displayShapeRemove();
-      }
-      
-      function musicVolume(){
-       if( musicBtn.textContent === "music on"){
-         music.volume = 0.5;
-         musicFail.volume = 0.5;
-         musicAddScore.volume = 0.5;
-
-         musicBtn.textContent = "music off" 
-        } 
-        else{
-        music.volume = 0;
-        musicFail.volume = 0;
-        musicAddScore.volume = 0;
-
-        musicBtn.textContent = "music on" 
-        } 
-      }
-
-    function speedChange(speedChange, isIncrease){
-      if(isIncrease){
-        speed -= speedChange;
-        speed <= 100 ? speed = 100 : speed;
-      }else{
-        speed >= 2900 ? speed = 2900: speed;
-        speed += speedChange;
-      }
-      document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
-    }
-  
+        
     //add score
     function addScore() {
       for (let i = 0; i < 199; i +=width) {
@@ -432,57 +426,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+      
     function gameRestart(){
       
-      clearInterval(timerId)
-      timerId = null
-        
-      music.pause();
-      
-      alert(`You click restart game, your score in last game ${score}`);
+      settingsReset();
 
-      speed = 2100;
-      document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
-
-
-      pauseBtn.textContent = "Pause";
-
-      pauseBtn.setAttribute("disabled", false);
-      startBtn.removeAttribute("disabled");
-      speedBtns.forEach(i =>{
-        i.removeAttribute('disabled');
-      })
-      
       currentRotation = 0;
       currentPosition = 4;
-
+      
       gamePlayGridClean();
-
+      
       score = 0;
       scoreDisplay.textContent = score;
+      alert(`You click restart game, your score in last game ${score}`);
     }
     
     function gameOver() {
       if(current.some(index => squares[currentPosition + index].classList.contains('taken'))) {
 
-        clearInterval(timerId);
-        timerId = null;
-
-        music.pause();
-
-        speed = 2100;
-        document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
-
-        
-        document.removeEventListener('keydown', control);
-
-        startBtn.removeAttribute("disabled");
-
-        pauseBtn.setAttribute("disabled", false);
-        restartBtn.setAttribute("disabled", false);
-        speedBtns.forEach(i =>{
-          i.removeAttribute('disabled');
-        })
+        settingsReset();
         
         musicFail.play();
 
@@ -491,8 +453,36 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    function gameFullscreen(){
-      document.fullscreenElement == null ? document.documentElement.requestFullscreen() : document.exitFullscreen();
+    function gamePlayGridClean(){
+      squares.forEach(i => {
+        i.removeAttribute("style");
+        i.classList.contains('tetromino') && i.classList.contains('taken') ? i.classList.remove('tetromino', 'taken') :  i.classList.remove('tetromino');
+        scoreDisplay.textContent = 0;
+        })
+
+        displayShapeRemove();
+    }
+
+    function settingsReset(){
+      clearInterval(timerId)
+      timerId = null
+        
+      music.pause();
+        
+      speed = 2100;
+      document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
+      
+      pauseBtn.textContent = "Pause";
+     
+      document.removeEventListener('keydown', control);
+      
+      startBtn.removeAttribute("disabled");
+      pauseBtn.setAttribute("disabled", false);
+      restartBtn.setAttribute("disabled", false);
+      speedBtns.forEach(i =>{
+        i.removeAttribute('disabled');
+      })
+      
     }
   
   })
