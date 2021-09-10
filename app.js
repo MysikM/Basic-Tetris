@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tetrominosRandomColor[1] = Math.round(Math.random()* (colors.length - 1));
     let timerId;
     let score = 0;
-    let speed = 500;
+    let speed = 2100;
 
     let currentPosition = 4;
     let currentRotation = 0;
@@ -102,10 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
     musicBtn.addEventListener('click', musicVolume);
     restartBtn.addEventListener('click', gameRestart);
     fullscreenBtn.addEventListener('click', gameFullscreen);
-    speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, true)});
-    speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, true)});
-    speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, false)});
-    speedIncrease100Btn.addEventListener("click",()=>{ speedChange(100, false)});
+    speedReduce10Btn.addEventListener("click", ()=>{speedChange(10, false)});
+    speedReduce100Btn.addEventListener("click", ()=>{speedChange(100, false)});
+    speedIncrease10Btn.addEventListener("click", ()=>{speedChange(10, true)});
+    speedIncrease100Btn.addEventListener("click",()=>{ speedChange(100, true)});
     
     //draw playground
    for(let i =0; i < 210; i++){
@@ -352,7 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('keydown', control);
         draw();
         timerId = setInterval(moveDown, speed);
-        document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
+        document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
+
         tetrominosNextRandom[0] = Math.floor(Math.random()*theTetrominoes.length);
         displayShape();
         music.play();
@@ -390,9 +391,10 @@ document.addEventListener('DOMContentLoaded', () => {
         speed -= speedChange;
         speed <= 100 ? speed = 100 : speed;
       }else{
+        speed >= 2900 ? speed = 2900: speed;
         speed += speedChange;
       }
-      document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
+      document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
     }
   
     //add score
@@ -408,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(timerId);
             timerId = null
             timerId = setInterval(moveDown, speed)
-            document.getElementById("speed").textContent = `Delay speed: ${speed/1000}`
+            document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
           }
 
           scoreDisplay.innerHTML = score;
@@ -439,8 +441,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       alert(`You click restart game, your score in last game ${score}`);
 
-      speed = 500;
-      document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
+      speed = 2100;
+      document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
 
 
       pauseBtn.textContent = "Pause";
@@ -468,8 +470,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         music.pause();
 
-        speed = 500;
-        document.getElementById("speed").textContent = `Delay speed: ${speed/1000}s`;
+        speed = 2100;
+        document.getElementById("speed").textContent = `Speed: ${-((speed/1000) - 3.1).toFixed(2)}s`;
+
         
         document.removeEventListener('keydown', control);
 
